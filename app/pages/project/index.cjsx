@@ -34,6 +34,7 @@ ProjectPageController = React.createClass
     guideIcons: {}
     loading: false
     loadingSelectedWorkflow: false
+    organization: null
     owner: null
     preferences: null
     project: null
@@ -97,13 +98,18 @@ ProjectPageController = React.createClass
 
     slug = ownerName + '/' + projectName
 
-    apiClient.type('projects').get({ slug, include: 'avatar,background,owners' })
+    apiClient.type('projects').get({ slug, include: 'avatar,background,organization,owners' })
       .then ([project]) =>
         @setState {project}
 
         if project?
           # Use apiClient with cached resources from include to get out of cache
           awaitBackground = apiClient.type('backgrounds').get(project.links.background.id).catch((error) => [])
+
+          if project.links.organization?
+            awaitOrganization = project.get('organization', { listed: true }).catch((error) => [])
+          else
+            awaitOrganization = null
 
           awaitOwner = apiClient.type('users').get(project.links.owner.id).catch((error) => console.error(error))
 
@@ -119,14 +125,15 @@ ProjectPageController = React.createClass
 
           Promise.all([
             awaitBackground,
+            awaitOrganization,
             awaitOwner,
             awaitPages,
             awaitProjectAvatar,
             awaitProjectCompleteness,
             awaitProjectRoles,
             awaitPreferences
-          ]).then(([background, owner, pages, projectAvatar, projectIsComplete, projectRoles, preferences]) =>
-              @setState({ background, owner, pages, projectAvatar, projectIsComplete, projectRoles, preferences })
+          ]).then(([background, organization, owner, pages, projectAvatar, projectIsComplete, projectRoles, preferences]) =>
+              @setState({ background, organization, owner, pages, projectAvatar, projectIsComplete, projectRoles, preferences })
               @getSelectedWorkflow(project, preferences)
               @loadFieldGuide(project.id)
             ).catch((error) => @setState({ error }); console.error(error); );
@@ -135,6 +142,7 @@ ProjectPageController = React.createClass
           @setState
             background: null
             error: new Error 'NOT_FOUND'
+            organization: null
             owner: null
             pages: null
             preferences: null
@@ -301,6 +309,7 @@ ProjectPageController = React.createClass
           loading={@state.loading}
           loadingSelectedWorkflow={@state.loadingSelectedWorkflow}
           onChangePreferences={@handlePreferencesChange}
+          organization={@state.organization}
           owner={@state.owner}
           pages={@state.pages}
           preferences={@state.preferences}

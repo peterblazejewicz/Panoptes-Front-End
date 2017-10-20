@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
+import classnames from 'classnames';
 import { Markdown } from 'markdownz';
 import Translate from 'react-translate-component';
 import getSubjectLocation from '../../../lib/get-subject-location.coffee';
@@ -12,6 +13,10 @@ import TalkStatus from './talk-status';
 const ProjectHomePage = (props) => {
   const avatarSrc = props.researcherAvatar || '/assets/simple-avatar.png';
   const renderTalkSubjectsPreview = props.talkSubjects.length > 2;
+  const descriptionClass = classnames(
+    'project-home-page__description',
+    { 'project-home-page__description--top-padding': !props.organization }
+  );
 
   return (
     <div className="project-home-page">
@@ -20,7 +25,10 @@ const ProjectHomePage = (props) => {
           <FinishedBanner project={props.project} />
         </div>)}
 
-      <div className="project-home-page__description">{props.project.description}</div>
+      {props.organization &&
+        <div className="project-home-page__organization">Organization: {props.organization.display_name}</div>}
+
+      <div className={descriptionClass}>{props.project.description}</div>
 
       <ProjectHomeWorkflowButtons
         activeWorkflows={props.activeWorkflows}
@@ -99,6 +107,7 @@ ProjectHomePage.contextTypes = {
 ProjectHomePage.defaultProps = {
   activeWorkflows: [],
   onChangePreferences: () => {},
+  organization: null,
   preferences: {},
   project: {},
   projectIsComplete: false,
@@ -110,6 +119,11 @@ ProjectHomePage.defaultProps = {
 ProjectHomePage.propTypes = {
   activeWorkflows: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
   onChangePreferences: React.PropTypes.func.isRequired,
+  organization: React.PropTypes.shape({
+    display_name: React.PropTypes.string,
+    id: React.PropTypes.string,
+    listed: React.PropTypes.bool
+  }),
   preferences: React.PropTypes.object,
   project: React.PropTypes.shape({
     configuration: React.PropTypes.object,

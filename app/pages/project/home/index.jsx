@@ -94,6 +94,7 @@ export default class ProjectHomeContainer extends React.Component {
       <ProjectHomePage
         activeWorkflows={this.state.activeWorkflows}
         onChangePreferences={this.props.onChangePreferences}
+        organization={this.props.organization}
         preferences={this.props.preferences}
         project={this.props.project}
         projectIsComplete={this.props.projectIsComplete}
@@ -113,6 +114,7 @@ ProjectHomeContainer.contextTypes = {
 
 ProjectHomeContainer.defaultProps = {
   onChangePreferences: () => {},
+  organization: null,
   preferences: {},
   project: {},
   projectIsComplete: false,
@@ -121,6 +123,11 @@ ProjectHomeContainer.defaultProps = {
 
 ProjectHomeContainer.propTypes = {
   onChangePreferences: React.PropTypes.func.isRequired,
+  organization: React.PropTypes.shape({
+    display_name: React.PropTypes.string,
+    id: React.PropTypes.string,
+    listed: React.PropTypes.bool
+  }),
   preferences: React.PropTypes.object,
   project: React.PropTypes.shape({
     configuration: React.PropTypes.object,

@@ -28,6 +28,7 @@ ProjectPage = React.createClass
     guide: null
     guideIcons: null
     loading: false
+    organization: null
     owner: {}
     preferences: null
     pages: null
@@ -158,6 +159,11 @@ ProjectPage = React.createClass
           <Translate content="project.nav.collections" />
         </Link>
 
+        {if @props.organization
+          <Link to="/organizations/#{this.props.organization.slug}" className="tabbed-content-tab">
+            {this.props.organization.display_name}
+          </Link>}
+
         {rearrangedLinks.map ({label, url}, i) =>
           unless !!label
             for pattern, icon of SOCIAL_ICONS
@@ -176,6 +182,7 @@ ProjectPage = React.createClass
       {React.cloneElement @props.children,
         loadingSelectedWorkflow: @props.loadingSelectedWorkflow
         onChangePreferences: @props.onChangePreferences
+        organization: @props.organization
         owner: @props.owner
         pages: @props.pages
         preferences: @props.preferences
