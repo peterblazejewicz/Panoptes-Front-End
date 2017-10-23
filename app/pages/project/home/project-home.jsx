@@ -26,7 +26,12 @@ const ProjectHomePage = (props) => {
         </div>)}
 
       {props.organization &&
-        <div className="project-home-page__organization">Organization: {props.organization.display_name}</div>}
+        <Link
+          to={`/organizations/${props.organization.slug}`}
+          className="project-home-page__organization"
+        >
+          Organization: {props.organization.display_name}
+        </Link>}
 
       <div className={descriptionClass}>{props.project.description}</div>
 
@@ -122,7 +127,8 @@ ProjectHomePage.propTypes = {
   organization: React.PropTypes.shape({
     display_name: React.PropTypes.string,
     id: React.PropTypes.string,
-    listed: React.PropTypes.bool
+    listed: React.PropTypes.bool,
+    slug: React.PropTypes.string
   }),
   preferences: React.PropTypes.object,
   project: React.PropTypes.shape({

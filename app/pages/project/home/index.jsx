@@ -126,7 +126,8 @@ ProjectHomeContainer.propTypes = {
   organization: React.PropTypes.shape({
     display_name: React.PropTypes.string,
     id: React.PropTypes.string,
-    listed: React.PropTypes.bool
+    listed: React.PropTypes.bool,
+    slug: React.PropTypes.string
   }),
   preferences: React.PropTypes.object,
   project: React.PropTypes.shape({
