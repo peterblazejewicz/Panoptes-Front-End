@@ -162,16 +162,27 @@ ProjectPage = React.createClass
         {if @props.organization
           <Link to="/organizations/#{this.props.organization.slug}" className="tabbed-content-tab">
             {this.props.organization.display_name}
+            {' '}
+            <i className="fa fa-external-link fa-fw" />
           </Link>}
 
         {rearrangedLinks.map ({label, url}, i) =>
-          unless !!label
+          if !!label
+            linkText =
+              <span>
+                {label}
+                {' '}
+                <i className="fa fa-external-link fa-fw" />
+              </span>
+          else
             for pattern, icon of SOCIAL_ICONS
               if url.indexOf(pattern) isnt -1
                 iconForLabel = icon
             iconForLabel ?= 'globe'
-            label = <i className="fa fa-#{iconForLabel} fa-fw fa-2x"></i>
-          <a key={i} href={url} className="tabbed-content-tab #{if iconForLabel then 'social-icon' else ''}" target="#{@props.project.id}#{url}">{label}</a>}
+            linkText = <i className="fa fa-#{iconForLabel} fa-fw fa-2x"></i>
+          <a key={i} href={url} className="tabbed-content-tab #{if iconForLabel then 'social-icon' else ''}" target="#{@props.project.id}#{url}">
+            {linkText}
+          </a>}
       </nav>
 
       {if !!@props.project.configuration?.announcement
