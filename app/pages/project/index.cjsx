@@ -98,7 +98,7 @@ ProjectPageController = React.createClass
 
     slug = ownerName + '/' + projectName
 
-    apiClient.type('projects').get({ slug, include: 'avatar,background,organization,owners' })
+    apiClient.type('projects').get({ slug, include: 'avatar,background,owners' })
       .then ([project]) =>
         @setState {project}
 
@@ -107,7 +107,9 @@ ProjectPageController = React.createClass
           awaitBackground = apiClient.type('backgrounds').get(project.links.background.id).catch((error) => [])
 
           if project.links.organization?
-            awaitOrganization = project.get('organization', { listed: true }).catch((error) => [])
+            awaitOrganization = project.get('organization', { listed: true })
+              .catch((error) => [])
+              .then((response) => if response.id then response else null)
           else
             awaitOrganization = null
 
